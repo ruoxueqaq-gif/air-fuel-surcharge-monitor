@@ -55,9 +55,9 @@ def mark_rows(rows, today):
 
 def build(root, today):
     result = {}
-    for rank, airline in enumerate(('NH', 'JL'), 1):
+    for airline, filename in (('NH', '01_全日空燃油附加费.csv'), ('JL', '02_日本航空燃油附加费.csv')):
         headers, rows = read_table(project_path(root, f'csv/03_不常看/{airline}.csv'))
-        result[f'csv/01_重点关注/0{rank}_{airline}.csv'] = table(['重点标记'] + headers + ['往返较最初涨跌'], mark_rows(rows, today))
+        result[f'csv/01_重点关注/{filename}'] = table(['重点标记'] + headers + ['往返较最初涨跌'], mark_rows(rows, today))
     return result
 
 

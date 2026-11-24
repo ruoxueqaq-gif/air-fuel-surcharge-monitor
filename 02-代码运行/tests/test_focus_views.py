@@ -64,8 +64,8 @@ def test_monitor_appends_to_archive_and_focus_rebuild_does_not_recreate_duplicat
             path.parent.mkdir(parents=True,exist_ok=True)
             path.write_bytes(content)
     focused=project_path(tmp_path, 'csv/01_重点关注')
-    assert sorted(path.name for path in focused.iterdir()) == ['01_NH.csv','02_JL.csv']
-    with (focused/'01_NH.csv').open(encoding='utf-8-sig',newline='') as handle:
+    assert sorted(path.name for path in focused.iterdir()) == ['01_全日空燃油附加费.csv','02_日本航空燃油附加费.csv']
+    with (focused/'01_全日空燃油附加费.csv').open(encoding='utf-8-sig',newline='') as handle:
         rows=list(csv.DictReader(handle))
     assert len(rows)==1 and rows[0]['单程燃油附加费']=='350'
     with archives['NH'].open(encoding='utf-8-sig',newline='') as handle:
@@ -126,8 +126,9 @@ def test_build_includes_initial_comparison_for_each_airline(tmp_path):
             ['2026-09-21', '2026-09-01', '2026-10-31', '中国大陆-日本', amount, 'CNY'],
         ]))
     output = focus.build(tmp_path, TODAY)
+    filenames = {'NH': '01_全日空燃油附加费.csv', 'JL': '02_日本航空燃油附加费.csv'}
     for airline, (_, amount, difference) in expected.items():
-        data = next(content for path, content in output.items() if path.endswith(f'_{airline}.csv'))
+        data = output[f'csv/01_重点关注/{filenames[airline]}']
         reader = csv.DictReader(StringIO(data.decode('utf-8-sig')))
         assert reader.fieldnames[-1] == '往返较最初涨跌'
         rows = list(reader)
